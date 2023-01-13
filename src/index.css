@@ -92,6 +92,7 @@ button:active {
   background-color: #fddddd;
 }
 
+/* pseudo class focus has been applied  to change background to white when focused*/
 .invalid input:focus {
   border-color: #ff8800;
   background-color: #fbe8d2;
