@@ -1,18 +1,24 @@
 import { useState, useRef, useEffect } from "react";
+import useInput from "../hooks/useInput";
 
 const SimpleInput = (props) => {
 
-  const [inputName , setInputName ] = useState('');
-  const [inputEmail, setInputEmail] = useState('');
-  // const [enteredNameIsValid , setEnteredNameIsValid] = useState(false);
-  const [enteredNameTouched , setEnteredNameTouched] = useState(false); 
-  const [enteredEmailTouched , setEnteredEmailTouched] = useState(false);
-  
+  const nameIsValid = (name) => {
+    return name.trim() != '';
+  }
+  const {
+    inputValue: nameValue,
+    inputValueIsValid: nameValueIsValid,
+    isError: isErrorInName,
+    inputValueChangeHandler: nameValueChangeHandler,
+    inputFieldBlurHandler: nameFieldBlurHandler,
+    reset: resetName
+
+  } = useInput(nameIsValid);
   //Better , we have a derived state denoting validity of inputName
   const isValidEmail = (email) => {
 
-    if(email == '')
-    {
+    if (email == '') {
       return false;
     }
     return String(email)
@@ -22,88 +28,57 @@ const SimpleInput = (props) => {
       );
   };
 
+  const {
+    inputValue: emailValue,
+    inputValueIsValid: emailValueIsValid,
+    isError: isErrorInEmail,
+    inputValueChangeHandler: emailValueChangeHandler,
+    inputFieldBlurHandler: emailFieldBlurHandler,
+    reset: resetEmail
 
-  const enteredNameIsValid = inputName.trim()!=='';
-  const enteredEmailIsValid = isValidEmail(inputEmail);
-  const nameInputIsInvalid = !enteredNameIsValid && enteredNameTouched;
-  const emailInputIsInvalid = !enteredEmailIsValid && enteredEmailTouched;
-  const formIsValid = enteredNameIsValid && enteredEmailIsValid;
-
-
-  const handleInputNameChange = (event)=>{
-    setInputName(event.target.value);
-  }
-  
-  const handleInputEmailChange = (event)=>{
-    setInputEmail(event.target.value);
-  }
+  } = useInput(isValidEmail);
 
 
-  const handleInputBlur = ()=>{
-    //Blur means it lost focus
-    setEnteredNameTouched(true);
-  }
-
-  const handleEmailInputBlur = ()=>{
-    setEnteredEmailTouched(true);
-  }
-  
-  const handleFormSubmission = (event)=>{
+  const formIsValid = nameValueIsValid && emailValueIsValid;
+  const handleFormSubmission = (event) => {
     //The first thing is to prevent default behaviour
     event.preventDefault();
-    if(!enteredNameIsValid)
-    {
+    if (!formIsValid) {
       return;
     }
-    setInputName('');
-    setEnteredNameTouched(false);
-    setInputEmail('');
-    setEnteredEmailTouched(false);
-    console.log(inputName);
+    resetName();
+    resetEmail();
   }
 
-  //2.The other way is to use useRef
-  // const nameInputRef = useRef('');
-  // const handleFormSubmission = (event)=>{
-  //   event.preventDefault();
-  //   console.log(nameInputRef.current.value);
-  //   //We can reset the input field using ref here
-  //   //But that is not the ideal way
-  //   //As it tends to directly change the dom
-  //   //Not something that should be done with react
-  //   nameInputRef.current.value = '';
+  const nameInputClasses = !isErrorInName ? 'input' : 'input invalid';
+  const emailInputClasses = !isErrorInEmail ? 'email' : 'email invalid';
 
-  // }
-  const nameInputClasses = !nameInputIsInvalid ? 'input' : 'input invalid';
-  const emailInputClasses = !emailInputIsInvalid?'email': 'email invalid';
-  
   return (
     <form onSubmit={handleFormSubmission}>
       <div className='form-control'>
         <label htmlFor='name'>Your Name</label>
         <input
-         /* ref={nameInputRef}*/
-         className={nameInputClasses}
-         value={inputName}
-         onChange={handleInputNameChange}
-         type='text'
-         id='name'
-         onBlur={handleInputBlur}
-         />
-        { nameInputIsInvalid && <p style={{color:'red'}}>* Name must not be empty</p>}
+          /* ref={nameInputRef}*/
+          className={nameInputClasses}
+          value={nameValue}
+          onChange={nameValueChangeHandler}
+          type='text'
+          id='name'
+          onBlur={nameFieldBlurHandler}
+        />
+        {isErrorInName && <p style={{ color: 'red' }}>* Name must not be empty</p>}
 
         {/* The email input field will be applied here */}
         <label htmlFor='email'>Email Id : </label>
         <input
-         /* ref={nameInputRef}*/
-         className={emailInputClasses}
-         value={inputEmail}
-         onChange={handleInputEmailChange}
-         type='text'
-         id='email'
-         onBlur={handleEmailInputBlur}
-         />
-        { emailInputIsInvalid && <p style={{color:'red'}}>*Not a valid email</p>}
+          className={emailInputClasses}
+          value={emailValue}
+          onChange={emailValueChangeHandler}
+          type='email'
+          id='email'
+          onBlur={emailFieldBlurHandler}
+        />
+        {isErrorInEmail && <p style={{ color: 'red' }}>*Not a valid email</p>}
       </div>
       <div className="form-actions">
         <button disabled={!formIsValid}>Submit</button>
