@@ -14,9 +14,10 @@ Utilized all three feedback:
 
 //Perfect.
 
-#To run the app : 
-1.Clone the repository using git clone 
-2.run npm install to install the depencdencies
+# To run the app : 
+1.Clone the repository using git clone https://github.com/LakshyaPurwar/react-forms.git
+2.run [ npm install]to install the depencdencies .
+3.run [ npm start ]
 
 ![image](https://user-images.githubusercontent.com/78524327/212079836-a80d2925-15bf-41f8-83bc-1aac5c704385.png)
 
