@@ -79,6 +79,17 @@ button:active {
   border-color: #33059e;
 }
 
+button:disabled,
+button:disabled:hover,
+button:disabled:active{
+  background-color: #ccc;
+  border-color:#ccc;
+  color:rgb(128, 126, 126);
+  cursor:not-allowed;
+}
+
+ 
+
 .form-actions {
   text-align: right;
 }
@@ -87,10 +98,12 @@ button:active {
   margin-left: 1rem;
 }
 
-.invalid input {
+.invalid {
   border: 1px solid #b40e0e;
   background-color: #fddddd;
 }
+
+
 
 /* pseudo class focus has been applied  to change background to white when focused*/
 .invalid input:focus {
